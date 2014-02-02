@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2007,2008 いまり All rights reserved.
+
+This file is part of nagareruCast.
+
+	nagareruCast is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 3 of the License, or
+	(at your option) any later version.
+
+	nagareruCast is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<widget>
+	<action trigger="onLoad" file="Resources/function.js"/>
+	<window>
+		<name>toracast</name>
+		<title>ながれるきゃすと</title>
+		<width>320</width>
+		<height>240</height>
+
+		<visible>true</visible>
+
+		<text>
+			<name>message</name>
+
+			<bgColor>#0000FF</bgColor>
+			<bgOpacity>180</bgOpacity>
+			<Opacity>255</Opacity>
+			<data>START</data>
+			<color>#FFFFFF</color>
+			<size>40</size>
+			<hOffset>48</hOffset>
+			<vOffset>52</vOffset>
+			<wrap>true</wrap>
+			<onMouseDown>
+			<![CDATA[
+start();
+			]]>
+			</onMouseDown>
+		</text>
+
+		<text>
+			<name>rArrow</name>
+			<data>_</data>
+			<color>#FF0000</color>
+			<opacity>140</opacity>
+			<bgColor>#FF0000</bgColor>
+			<bgOpacity>140</bgOpacity>
+
+			<size>18</size>
+			<tooltip></tooltip>
+			<hOffset>309</hOffset>
+			<vOffset>236</vOffset>
+			<visible>false</visible>
+		</text>
+
+		<text>
+			<name>title</name>
+			<data>ながれるキャスト</data>
+			<!--<bgColor>#99CCFF</bgColor>-->
+			<bgColor>#88ACD5</bgColor>
+			<bgOpacity>180</bgOpacity>
+			<color>#FFFFFF</color>
+			<size>18</size>
+			<tooltip>ながれるキャスト by いまり</tooltip>
+			<hOffset>0</hOffset>
+			<vOffset>18</vOffset>
+			<shadow>
+				<color>#000000</color>
+				<opacity>255</opacity>
+				<vOffset>1</vOffset>
+				<hOffset>1</hOffset>
+			</shadow>
+
+			<onMouseDown>
+			</onMouseDown>
+
+		</text>
+
+
+
+		<text>
+			<name>resnop</name>
+			<data></data>
+			<color>#FFFFFF</color>
+
+			<bgColor>#000000</bgColor>
+			<bgOpacity>1</bgOpacity>
+
+			<size>24</size>
+			<tooltip>レス番</tooltip>
+
+			<hOffset>302</hOffset>
+			<vOffset>238</vOffset>
+			<hAlign>right</hAlign>
+
+			<visible>true</visible>
+			<onMouseDown>
+			<![CDATA[
+stopper();
+			]]>
+			</onMouseDown>
+
+
+		</text>
+
+
+		<text>
+			<name>cm</name>
+			<data></data>
+			<color>#FFFFFF</color>
+			<bgColor>#0000FF</bgColor>
+			<bgOpacity>50</bgOpacity>
+
+			<size>18</size>
+			<tooltip></tooltip>
+
+			<hOffset>12</hOffset>
+			<vOffset>238</vOffset>
+			<visible>true</visible>
+		</text>
+
+		<text>
+			<name>lArrow</name>
+			<data>_</data>
+			<color>#FF0000</color>
+      
+			<opacity>140</opacity>
+			<bgColor>#FF0000</bgColor>
+			<bgOpacity>140</bgOpacity>
+
+			<size>18</size>
+			<tooltip></tooltip>
+
+			<hOffset>0</hOffset>
+			<vOffset>236</vOffset>
+			<visible>false</visible>
+		</text>
+
+		<text>
+			<!--下に出す固定台詞用Text-->
+			<name>selif</name>
+			<data></data>
+			<color>#FFFFFF</color>      
+			<opacity>255</opacity>
+			<size>18</size>
+			<hOffset>116</hOffset>
+			<vOffset>236</vOffset>
+			<visible>true</visible>
+			<shadow>
+				<color>#000000</color>
+				<opacity>255</opacity>
+				<vOffset>1</vOffset>
+				<hOffset>1</hOffset>
+			</shadow>
+
+		</text>
+
+
+	</window>
+
+	<timer name="reqTimer">
+		<interval>30.0</interval>
+		<onTimerFired>
+		<![CDATA[
+request();
+		]]>
+		</onTimerFired>
+		<ticking>false</ticking>
+	</timer>
+
+	<timer name="tickTimer">
+		<interval>0.05</interval>
+		<onTimerFired>
+		<![CDATA[
+tick();
+		]]>
+		</onTimerFired>
+		<ticking>false</ticking>
+	</timer>
+
+	<timer name="supliTimer">
+		<interval>7</interval>
+		<onTimerFired>
+		<![CDATA[
+supli();
+		]]>
+		</onTimerFired>
+		<ticking>false</ticking>
+	</timer>
+	
+	<preferenceGroup name="prop" title="スレの設定"/>
+
+	<preference name="threadUrl">
+		<title>スレッドのURL：</title>
+		<defaultValue>http://jbbs.livedoor.jp/bbs/read.cgi/game/30158/1176633184/</defaultValue>
+		<group>prop</group>
+		<type>text</type>
+		<description>例: http://jbbs.livedoor.jp/bbs/read.cgi/
+game/30158/1176633184/</description>
+	</preference>
+
+	<preference name="resno">
+		<title>表示を開始するレス番：</title>
+		<defaultValue>1</defaultValue>
+		<group>prop</group>
+		<type>text</type>
+		<description>デフォルト: 1</description>
+	</preference>
+
+	<preferenceGroup name="request" title="更新時間"/>
+	<preference name="reqInterval">
+		<title>レス取得間隔(秒)：</title>
+		<defaultValue>30</defaultValue>
+		<group>request</group>
+		<type>text</type>
+		<description>デフォルト: 30</description>
+	</preference>
+
+	<preferenceGroup name="screen" title="画面の設定"/>
+	<preference name="width">
+		<title>横幅(px)：</title>
+		<defaultValue>320</defaultValue>
+		<group>screen</group>
+		<type>text</type>
+		<description>デフォルト: 320</description>
+	</preference>
+	<preference name="height">
+		<title>縦幅(px)：</title>
+		<defaultValue>240</defaultValue>
+		<group>screen</group>
+		<type>text</type>
+		<description>デフォルト: 240</description>
+	</preference>
+	
+
+	<preferenceGroup name="jimaku_setting" title="字幕の設定"/>
+	<preference name="res_font">
+		<title>字幕のフォント：</title>
+		<defaultValue></defaultValue>
+		<group>jimaku_setting</group>
+		<type>font</type>
+		<description></description>
+	</preference>
+	<preference name="res_size">
+		<title>字幕のフォントサイズ：</title>
+		<defaultValue>26</defaultValue>
+		<group>jimaku_setting</group>
+		<type>text</type>
+		<description>デフォルト: 26</description>
+	</preference>
+	<preference name="res_color">
+		<title>字幕の色：</title>
+		<defaultValue>#FFFFFF</defaultValue>
+		<group>jimaku_setting</group>
+		<description></description>
+		<type>color</type>
+	</preference>
+	<preference name="res_shadow_color">
+		<title>字幕の影の色：</title>
+		<defaultValue>#000000</defaultValue>
+		<group>jimaku_setting</group>
+		<description></description>
+		<type>color</type>
+	</preference>
+		
+	<preference name="res_lane">
+		<title>字幕を表示する最大行数：</title>
+		<defaultValue>4</defaultValue>
+		<group>jimaku_setting</group>
+		<type>text</type>
+		<description>デフォルト: 4</description>
+	</preference>
+	<preference name="res_speed">
+		<title>字幕の流れるスピード：</title>
+		<defaultValue>3</defaultValue>
+		<group>jimaku_setting</group>
+		<type>slider</type>
+		<ticks>5</ticks>
+		<minLength>0</minLength>
+		<maxLength>5</maxLength>
+		<tickLabel>はやい</tickLabel>
+		<tickLabel>おそい</tickLabel>
+		<description>左から2番目がだいたいニコニコ等速。PeerCastでのおすすめは右から2番目です。</description>
+	</preference>
+	<preference name="res_age">
+		<title>ageたレスの字幕を下方に表示する</title>
+		<defaultValue>1</defaultValue>
+		<group>jimaku_setting</group>
+		<type>checkbox</type>
+	</preference>
+
+	<preference name="res_age_font">
+		<title>ageた字幕のフォント：</title>
+		<defaultValue></defaultValue>
+		<group>jimaku_setting</group>
+		<type>font</type>
+		<description></description>
+	</preference>
+
+	<preference name="res_multiline">
+		<title>複数行レスの表示</title>
+		<defaultValue>0</defaultValue>
+		<group>jimaku_setting</group>
+		<type>checkbox</type>
+	</preference>
+	<preference name="res_maxlength">
+		<title>文字数制限</title>
+		<defaultValue>80</defaultValue>
+		<group>jimaku_setting</group>
+		<type>text</type>
+		<description>デフォルト: 80</description>
+	</preference>
+
+
+
+	<preferenceGroup name="title_setting" title="タイトルの設定"/>
+	<preference name="title_fontsize">
+		<title>タイトルのフォントサイズ：</title>
+		<defaultValue>18</defaultValue>
+		<group>title_setting</group>
+		<description>デフォルト: 18</description>
+	</preference>
+	<preference name="title">
+		<title>タイトルに表示する文字：</title>
+		<defaultValue>ながれるキャスト</defaultValue>
+		<group>title_setting</group>
+		<type>text</type>
+		<description>例: FMいまり</description>
+	</preference>
+	<preference name="title_color">
+		<title>タイトルの文字色：</title>
+		<defaultValue>#FFFFFF</defaultValue>
+		<group>title_setting</group>
+		<description></description>
+		<type>color</type>
+	</preference>
+	<preference name="title_bgcolor">
+		<title>タイトルの背景色：</title>
+		<defaultValue>#88ACD5</defaultValue>
+		<group>title_setting</group>
+		<description></description>
+		<type>color</type>
+	</preference>
+
+	<preferenceGroup name="word" title="抽出ワード"/>
+	<preference name="regexp">
+		<title>抽出ワード：</title>
+		<defaultValue></defaultValue>
+		<group>word</group>
+		<description>レス抽出に使用する単語。本文にこの単語が含まれるレスに色をつける。「,」区切りで複数指定可能。例：SM,いまり,ピンク</description>
+	</preference>
+	<preference name="re_color">
+		<title>着色：</title>
+		<defaultValue>#0000FF</defaultValue>
+		<group>word</group>
+		<description>レスにつける色。</description>
+		<type>color</type>
+	</preference>
+
+	<preference name="re_font">
+		<title>フォント：</title>
+		<defaultValue></defaultValue>
+		<group>word</group>
+		<type>font</type>
+		<description></description>
+	</preference>
+
+	<preference name="re_size">
+		<title>フォントサイズ：</title>
+		<defaultValue>26</defaultValue>
+		<group>word</group>
+		<type>text</type>
+		<description>デフォルト: 26</description>
+	</preference>
+
+	<preference name="re_sound">
+		<title>着信音を鳴らす</title>
+		<defaultValue>false</defaultValue>
+		<group>word</group>
+		<description></description>
+		<type>checkbox</type>
+	</preference>
+	<preference name="re_sound_file">
+		<title>着信音ファイルの場所：</title>
+		<defaultValue></defaultValue>
+		<group>word</group>
+		<type>selector</type>
+		<style>open</style>
+		<kind>files</kind>
+		<extension>.mp3</extension>
+		<extension>.wav</extension>
+		<description>新着レス表示時に鳴らす音声ファイル(MP3,WAV)</description>
+	</preference>
+	
+	<preferenceGroup name="ng" title="NGワード"/>
+	<preference name="ngword">
+		<title>NGワード：</title>
+		<defaultValue></defaultValue>
+		<group>ng</group>
+		<description>本文にこの単語が含まれるレスを非表示にする。「,」区切りで複数指定可能。例：犯人,ヤス,ネタバレ</description>
+	</preference>
+</widget>
